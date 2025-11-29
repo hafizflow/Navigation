@@ -1,32 +1,29 @@
-//
-//  ContentView.swift
-//  Navigation
-//
-//  Created by Hafizur Rahman on 29/11/25.
-//
-
 import SwiftUI
+
+struct DetailView: View {
+    var num: Int
+    @Binding var path: NavigationPath
+    
+    var body: some View {
+        NavigationLink("Go to next page", value: Int.random(in: 1...1000))
+            .navigationTitle("Page \(num)")
+            .toolbar {
+                Button("Home") {
+                    path = NavigationPath()
+                }
+            }
+    }
+}
 
 struct ContentView: View {
     @State private var path = NavigationPath()
     
     var body: some View {
         NavigationStack(path: $path) {
-            VStack {
-                Button("Go to 32") {
-                    path.append(32)
+            DetailView(num: 0, path: $path)
+                .navigationDestination(for: Int.self) { i in
+                    DetailView(num: i, path: $path)
                 }
-                
-                Button("Go to hello") {
-                    path.append("hello")
-                }
-            }
-            .navigationDestination(for: Int.self) { selected in
-                Text("You selected \(selected)")
-            }
-            .navigationDestination(for: String.self) { selected in
-                Text("You selected \(selected)")
-            }
         }
     }
 }
